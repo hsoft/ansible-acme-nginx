@@ -2,14 +2,6 @@
 - name: Create global ACME location directive
   template: src=acme_well_known.conf dest=/etc/nginx/snippets/acme_well_known.conf
 
-# REMOVED FEATURE
-# The catchall server is now provided by https://github.com/savoirfairelinux/ansible-nginx
-# It's more elegant and convenient that way. Here, we make sure that our old catchall is removed.
-# Let's keep this config uninstallation task here for a while and then remove it.
-- name: Removes catchall server that responds to ACME challenges
-  file: path=/etc/nginx/sites-enabled/acme_challenge_catchall.conf state=absent
-  notify: nginx restart
-
 # see https://weakdh.org/sysadmin.html
 - name: Create a strong dhparam.pem
   shell: openssl dhparam -out /etc/nginx/dhparams.pem 2048

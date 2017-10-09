@@ -35,7 +35,8 @@
   args:
     chdir: "{{ current_domain_folder }}"
   when: acme_challenge|changed
-  notify: nginx restart
+  notify:
+    - nginx reload
 
 - name: setup domain fullchain perms
   file:

@@ -2,8 +2,6 @@
   apt: name={{ item }} state=present
   with_items:
     - openssl
-    - git
-    - sudo
     - nginx
 
 - name: Ensure that our ACME user exists
