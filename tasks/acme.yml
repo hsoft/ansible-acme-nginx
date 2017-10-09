@@ -1,5 +1,6 @@
 - name: Prepare Let's Encrypt challenge (if needed)
   letsencrypt:
+    acme_directory: "https://acme-v01.api.letsencrypt.org/directory"
     account_key: "{{ acme_ssl_base_folder }}/account.key"
     csr: "{{ current_domain_folder }}/domain.csr"
     dest: "{{ current_domain_folder }}/signed.crt"
@@ -7,30 +8,33 @@
 
 - name: Copy ACME challenge to our challenges folder
   copy:
-    dest: "{{ acme_challenges_folder_path }}/{{ acme_challenge['challenge_data'][current_domain]['http-01']['resource']|basename }}"
-    content: "{{ acme_challenge['challenge_data'][current_domain]['http-01']['resource_value'] }}"
+    dest: "{{ acme_challenges_folder_path }}/{{ acme_challenge['challenge_data'][copy_item]['http-01']['resource']|basename }}"
+    content: "{{ acme_challenge['challenge_data'][copy_item]['http-01']['resource_value'] }}"
   when: acme_challenge|changed
+  with_items: "{{ current_sub_domains }}"
+  loop_control:
+    loop_var: copy_item
 
 - name: Sign our CSR
   letsencrypt:
+    acme_directory: "https://acme-v01.api.letsencrypt.org/directory"
     account_key: "{{ acme_ssl_base_folder }}/account.key"
     csr: "{{ current_domain_folder }}/domain.csr"
     dest: "{{ current_domain_folder }}/signed.crt"
     data: "{{ acme_challenge }}"
-  register: acme_challenge_result
 
 - name: Fetch Lets Encrypt intermediate cert
   get_url:
     url: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
     dest: "{{ current_domain_folder }}/intermediate.pem"
     force: yes
-  when: acme_challenge_result|changed
+  when: acme_challenge|changed
     
 - name: Create fullchain cert
   shell: "cat signed.crt intermediate.pem > chained.pem"
   args:
     chdir: "{{ current_domain_folder }}"
-  when: acme_challenge_result|changed
+  when: acme_challenge|changed
   notify: nginx restart
 
 - name: setup domain fullchain perms
