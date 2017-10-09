@@ -27,10 +27,6 @@ _acme_multi_domains_item:
   base_name: ''
   domains: []
 
-# Where to fetch acme_tiny from, at what version
-acme_tiny_repo_url: https://github.com/diafygi/acme-tiny.git
-acme_tiny_repo_version: master
-
 # If enabled, we self-sign our private keys instead of asking Let's Encrypt
 acme_self_sign: no
 

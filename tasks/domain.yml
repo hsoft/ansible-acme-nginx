@@ -25,21 +25,13 @@
     group: www-data
     mode: 0640
    
-- name: Do we have a certificate?
-  stat: "path={{ current_domain_folder }}/chained.pem"
-  register: cert_stat
-
-- name: Is certificate too old?
-  find:
-    paths: "{{ current_domain_folder }}"
-    pattern: "chained.pem"
-    age: 30d
-  register: cert_age_find
-
 - include: sign.yml
   become: yes
   become_user: "{{ acme_user }}"
-  when: cert_age_find.matched > 0 or not cert_stat.stat.exists
+
+- include: acme.yml
+  become: yes
+  become_user: "{{ acme_user }}"
 
 - name: Generate nginx snippet for domain-specific SSL conf
   template: src=domain_ssl.conf dest=/etc/nginx/snippets/{{ current_domain }}.ssl.conf

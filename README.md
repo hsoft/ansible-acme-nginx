@@ -1,17 +1,16 @@
 # ansible-acme-nginx
 
-*Sets up SSL certificate signed by Let's Encrypt using acme-tiny*
+*Sets up SSL certificate signed by Let's Encrypt*
 
 ## Features
 
-* Uses [acme-tiny][acme-tiny] for better code auditability.
-* Doesn't run acme-tiny as root.
+* Uses ansible's new [letsencrypt][letsencrypt] action
 * Provides an nginx snippet that is easily included in your configs for challenges.
 * Automatically renew certificates every 30 days.
 
 ## Requirements
 
-* Ansible 2.0+
+* Ansible 2.4+
 * A working nginx installation. Recommended role: [ansible-nginx][ansible-nginx].
 
 ## Usage
@@ -54,7 +53,7 @@ there to answer ACME challenges. Otherwise, in case of regular cert updates, it 
 nginx conf's responsibility to answer ACME challenge, which is done easily by including the
 provided snippet.
 
-[acme-tiny]: https://github.com/diafygi/acme-tiny
+[letsencrypt]: http://docs.ansible.com/ansible/latest/letsencrypt_module.html
 [ansible-wordpress-snippet]: https://github.com/hsoft/ansible-wordpress/blob/7f3e8d8e8ce16838beb1d6646914184d1f61227c/templates/nginx.conf#L14
 [ansible-nginx]: https://github.com/savoirfairelinux/ansible-nginx
 
