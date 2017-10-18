@@ -3,7 +3,7 @@
   shell: "openssl req -new -sha256 -key {{ current_domain_folder }}/domain.key -subj \"/CN={{ current_domain }}\" > {{ current_domain_folder }}/domain.csr"
   args:
     creates: "{{ current_domain_folder }}/domain.csr"
-  when: not current_sub_domains|bool
+  when: not current_sub_domains|length
 
 - block:
   - name: Generate openssl_san.cnf
@@ -20,5 +20,5 @@
     args:
       creates: "{{ current_domain_folder }}/domain.csr"
 
-  when: current_sub_domains|bool
+  when: current_sub_domains|length
 
