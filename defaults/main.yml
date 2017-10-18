@@ -27,9 +27,6 @@ _acme_multi_domains_item:
   base_name: ''
   domains: []
 
-# If enabled, we self-sign our private keys instead of asking Let's Encrypt
-acme_self_sign: no
-
 # If set, we will fetch existing SSL data from our specified host name (from the inventory)
 # **instead** of going through with ACME challenges. You should use this option when you're in the
 # process of transferring a host and you want to avoid the downtime between the moment where you
