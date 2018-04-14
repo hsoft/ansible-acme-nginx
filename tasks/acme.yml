@@ -10,8 +10,8 @@
   copy:
     dest: "{{ acme_challenges_folder_path }}/{{ acme_challenge['challenge_data'][copy_item]['http-01']['resource']|basename }}"
     content: "{{ acme_challenge['challenge_data'][copy_item]['http-01']['resource_value'] }}"
-  when: acme_challenge|changed
-  with_items: "{{ current_sub_domains }}"
+  when: acme_challenge is changed
+  with_items: "{{ current_sub_domains|default([current_domain], true) }}"
   loop_control:
     loop_var: copy_item
 
@@ -28,13 +28,13 @@
     url: https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem
     dest: "{{ current_domain_folder }}/intermediate.pem"
     force: yes
-  when: acme_challenge|changed
-    
+  when: acme_challenge is changed
+
 - name: Create fullchain cert
   shell: "cat signed.crt intermediate.pem > chained.pem"
   args:
     chdir: "{{ current_domain_folder }}"
-  when: acme_challenge|changed
+  when: acme_challenge is changed
   notify:
     - nginx reload
 
@@ -45,4 +45,3 @@
     group: www-data
     mode: 0640
   become: no
-
